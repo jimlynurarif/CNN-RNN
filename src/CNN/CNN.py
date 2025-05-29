@@ -12,7 +12,7 @@ class MySequential:
             x = layer.forward(x)
         return x
 
-class Conv2D:
+class Conv2DScratch:
     def __init__(self, weight, bias, stride=1, padding=0):
         self.weight = weight
         self.bias = bias
@@ -25,11 +25,6 @@ class Conv2D:
         return np.pad(x, ((0, 0), (self.padding, self.padding), (self.padding, self.padding)), mode='constant')
 
     def forward(self, x):
-        """
-        Pure NumPy implementation of 2D convolution.
-        x: (C_in, H_in, W_in)
-        returns: (C_out, H_out, W_out)
-        """
         C_out, C_in, kH, kW = self.weight.shape
         x_padded = self.pad_input(x)
         _, H_in, W_in = x.shape
@@ -49,11 +44,11 @@ class Conv2D:
                     out[oc, i, j] += self.bias[oc]
         return out
 
-class ReLU:
+class ReLUScratch:
     def forward(self, x):
         return np.maximum(0, x)
 
-class MaxPool2D:
+class MaxPool2DScratch:
     def forward(self, x):
         # x: (C, H, W)
         C, H, W = x.shape
@@ -64,7 +59,7 @@ class MaxPool2D:
                     out[c, i//2, j//2] = np.max(x[c, i:i+2, j:j+2])
         return out
 
-class AveragePool2D:
+class AveragePool2DScratch:
     def forward(self, x):
         # x: (C, H, W)
         C, H, W = x.shape
@@ -75,11 +70,11 @@ class AveragePool2D:
                     out[c, i//2, j//2] = np.mean(x[c, i:i+2, j:j+2])
         return out
 
-class Flatten:
+class FlattenScratch:
     def forward(self, x):
         return x.flatten()
 
-class Dense:
+class DenseScratch:
     def __init__(self, weight, bias):
         self.weight = weight
         self.bias = bias
