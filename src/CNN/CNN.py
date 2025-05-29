@@ -1,5 +1,17 @@
 import numpy as np
 
+class MySequential:
+    def __init__(self):
+        self.layers = []
+
+    def add(self, layer):
+        self.layers.append(layer)
+
+    def forward(self, x):
+        for layer in self.layers:
+            x = layer.forward(x)
+        return x
+
 class Conv2D:
     def __init__(self, weight, bias, stride=1, padding=0):
         self.weight = weight
@@ -43,20 +55,24 @@ class ReLU:
 
 class MaxPool2D:
     def forward(self, x):
-        h, w = x.shape
-        out = np.zeros((h // 2, w // 2))
-        for i in range(0, h, 2):
-            for j in range(0, w, 2):
-                out[i//2, j//2] = np.max(x[i:i+2, j:j+2])
+        # x: (C, H, W)
+        C, H, W = x.shape
+        out = np.zeros((C, H // 2, W // 2))
+        for c in range(C):
+            for i in range(0, H, 2):
+                for j in range(0, W, 2):
+                    out[c, i//2, j//2] = np.max(x[c, i:i+2, j:j+2])
         return out
-    
+
 class AveragePool2D:
     def forward(self, x):
-        h, w = x.shape
-        out = np.zeros((h // 2, w // 2))
-        for i in range(0, h, 2):
-            for j in range(0, w, 2):
-                out[i//2, j//2] = np.average(x[i:i+2, j:j+2])
+        # x: (C, H, W)
+        C, H, W = x.shape
+        out = np.zeros((C, H // 2, W // 2))
+        for c in range(C):
+            for i in range(0, H, 2):
+                for j in range(0, W, 2):
+                    out[c, i//2, j//2] = np.mean(x[c, i:i+2, j:j+2])
         return out
 
 class Flatten:
